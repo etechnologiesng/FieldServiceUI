@@ -42,6 +42,9 @@ const initial_state = {
         case "CREATE_LOCATION":
            
             return {...state, location: action.payload};
+        case "DELETE_LOCATION":
+           
+            return state.locations.filter(location => location.id !== action.payload);
         default:
             return state;
         }

@@ -43,7 +43,7 @@ export const MENUITEMS = [
   {
     title: "Service",
     icon: <i className="pe-7s-world pe-lg"></i>,
-    path: `${process.env.PUBLIC_URL}/Accounts/Create`,
+    path: `${process.env.PUBLIC_URL}/Accounts`,
     type: "sub",
     active: true,
     bookmark: true,
@@ -52,7 +52,7 @@ export const MENUITEMS = [
       {
         title: "Create",
         type: "link",
-        path: `${process.env.PUBLIC_URL}/Accounts/Create`,
+        path: `${process.env.PUBLIC_URL}/Account/Create`,
       },
       {
         title: "Accounts",

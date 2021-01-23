@@ -38,6 +38,31 @@ export const getlocation = (id) => {
 }
 
 
+export const deleteLocation = (accountId,id) => {
+    return (dispatch) => {
+        axios.delete('https://localhost:5001/api/Location', {
+            params: {
+              id: id
+            }
+        })
+        .then(response => {
+            console.log(response);
+            dispatch({
+                type: 'DELETE_LOCATION',
+                payload: id
+            })
+
+            toast.success("Location succesfully deleted !!! !", {
+                position: toast.POSITION.TOP_RIGHT,
+              });
+        })
+        .catch(error => {
+            console.log(error);
+        });
+    }
+}
+
+
 export const addLocation = locationObj => {
    return {
         type: 'ADD_TO_LOCATIONS',

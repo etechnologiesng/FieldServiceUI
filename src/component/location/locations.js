@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { getLocation, createLocation } from "../../redux/location/action";
+import { deleteLocation, getLocation, createLocation } from "../../redux/location/action";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch, } from "react-redux"
 import {
@@ -32,7 +32,7 @@ const Location = (props) => {
  // const [contact, setContact] = useState(contactInit);
  // const history = useHistory();
  const locationInit ={
-  "id": null,
+ 
   "name": "",
   "description": "",
   "street1": "",
@@ -61,6 +61,22 @@ const [location, setLocation] = useState(locationInit);
     errors.showMessages();
   }
 };
+
+
+
+
+const handleDelete = (id) => {
+  if (
+    window.confirm(
+      `Are you sure you want to delete?`
+    )
+  ) {
+    dispatch(deleteLocation(accountState.id, id));
+   // toast.success("Successfully Deleted !");
+  }
+};
+
+
  const [createaccountlocation, setcreateaccountlocation] = useState(false);
 
  const createaccountlocationtoggle = () =>{
@@ -97,11 +113,11 @@ const [location, setLocation] = useState(locationInit);
                 <div className="table-responsive">
                   <table className="table card-table table-vcenter text-nowrap">
                     <thead>
-                      <tr>
+                      <tr><th>Action</th>
                         <th>Name</th>
                         <th>City</th>
                         <th>Country</th>
-                        <th></th>
+                        
                       </tr>
                     </thead> 
                     {(locations.length > 0) ? (
@@ -109,6 +125,29 @@ const [location, setLocation] = useState(locationInit);
                         {locations.map((location, index) => {
                           return (
                       <tr key={index}>
+                        <td>
+
+                        <span onClick= {()=>handleDelete(location.id)} >
+          <i
+            className="fa fa-trash"
+            style={{ width: 35, fontSize: 16, padding: 11, color: "#e4566e" }}
+          ></i>
+        </span>
+        <span >
+          <i
+            className="fa fa-pencil"
+            style={{
+              width: 35,
+              fontSize: 16,
+              padding: 11,
+              color: "rgb(40, 167, 69)",
+            }}
+          ></i>
+          
+          </span>
+
+
+                        </td>
                         <td>
 
                           {location.name}
@@ -120,15 +159,7 @@ const [location, setLocation] = useState(locationInit);
                           
                         </td>
                        
-                        <td className="text-right">
-                          <Button color="primary btn-pill" size="sm">
-                            <i className="fa fa-pencil"></i> Edit
-                          </Button>
-                         
-                          <Button color="danger btn-pill" size="sm">
-                            <i className="fa fa-trash"></i> Delete
-                          </Button>
-                        </td>
+                        
                       </tr>
                       );
                     })} </tbody>

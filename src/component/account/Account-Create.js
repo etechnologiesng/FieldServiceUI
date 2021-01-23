@@ -5,7 +5,7 @@ import { getAccount, createAccount } from "../../redux/Account/action";
 import { useForm } from "react-hook-form";
 import Contact from "../contact/contacts"
 import Location from "../location/locations"
-
+import Territory from "../common/dropdown/territory"
 import {
   Container,
   Row,
@@ -245,28 +245,7 @@ const CreateAccount = (props) => {
                       </FormGroup>
                     </Col>
                     <Col lg="6">
-                    <FormGroup className=" m-form__group">
-                        <Label>Service Territory</Label>
-                        <InputGroup>
-                          <InputGroupAddon addonType="prepend">
-                          <InputGroupText>
-                         
-                          <i className="icofont icofont-location-pin"></i>
-                            </InputGroupText>
-                          </InputGroupAddon>
-                          <Input
-                          type="select"
-                          name="select"
-                          className="form-control"
-                        >
-                          <option value="0">--Select--</option>
-                          <option value="1">Lagos</option>
-                          <option value="2">Canada</option>
-                          <option value="3">Usa</option>
-                          <option value="4">Aus</option>
-                        </Input>
-                        </InputGroup>
-                      </FormGroup>
+                    <Territory/>
                       
                     </Col>
                     

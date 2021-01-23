@@ -16,6 +16,7 @@ const initial_state = {
     account: accountInit,
     errorMsg: "",
     accounts:[]
+
   };
 
   export default (state = initial_state, action) => {
@@ -26,8 +27,7 @@ const initial_state = {
                 loading: true,
                 errorMsg: ""
               };
-        case "LIST_USERS":
-            return {...state, loading: false, users: action.payload};
+        
         case "GET_ACCOUNTS":
             return {...state, loading: false, accounts: action.payload};
         case "GET_ACCOUNT":

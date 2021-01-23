@@ -142,9 +142,14 @@ import Jobapply from "../component/application/jobsearch/job-apply";
 // Users
 import Userprofile from "../component/appnew/users/userprofile";
 import Useredit from "../component/appnew/users/useredit";
-import CreateAccount from "../component/Accounts/Account-Create";
+
 import Usercards from "../component/appnew/users/usercards";
 
+
+//Services
+import CreateAccount from "../component/account/Account-Create";
+
+import Account from "../component/account/accounts";
 // Social app
 import SocialApp from "../component/appnew/social-app/socialApp";
 
@@ -314,9 +319,10 @@ export const routes = [
   { path: "/users/user-profile", Component: Userprofile },
   { path: "/users/user-edit", Component: Useredit },
 
-  { path: "/Accounts/Create", Component: CreateAccount },
+  { path: "/Account/Create", Component: CreateAccount },
   { path: "/users/user-cards", Component: Usercards },
-
+//Services
+  { path: "/Accounts", Component: Account },
   { path: "/appnew/social-app", Component: SocialApp },
 
   { path: "/editors/ck-editor", Component: CkEditor },

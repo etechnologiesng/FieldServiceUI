@@ -1,13 +1,17 @@
 import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
-export const getUsers = () => {
+export const getAccounts = () => {
     return (dispatch) => {
-        axios.get('http://localhost:3001/users')
+
+        dispatch({
+            type: "ACCOUNT_LOADING"
+          });
+        axios.get('https://localhost:5001/api/Account')
         .then(response => {
             console.log(response);
             dispatch({
-                type: 'LIST_USERS',
-                payload: response.data
+                type: 'GET_ACCOUNTS',
+                payload: response.data.data
             })
         })
         .catch(error => {

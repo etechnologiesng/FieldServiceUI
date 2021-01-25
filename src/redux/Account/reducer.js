@@ -15,7 +15,12 @@ const initial_state = {
     loading: false,
     account: accountInit,
     errorMsg: "",
-    accounts:[]
+    accounts:[],
+    pageNumber: 0,
+    pageSize: 0,
+    totalResult: 0,
+    totalPages:0
+
 
   };
 
@@ -27,9 +32,31 @@ const initial_state = {
                 loading: true,
                 errorMsg: ""
               };
+        case "ACCOUNT_LOAD_FAIL":
+            return {
+            ...state,
+              loading: false,
+              errorMsg: "something went wrong"
+            };
         
         case "GET_ACCOUNTS":
-            return {...state, loading: false, accounts: action.payload};
+            return {...state, loading: false, 
+              accounts: action.payload.data,
+               pageNumber:action.payload.pageNumber,
+                pageSize: action.payload.pageSize, 
+                totalResult: action.payload.totalResult,
+                totalPages: action.payload.totalPages
+                
+              };
+            case "SEARCH_ACCOUNTS":
+                return {...state, loading: false, 
+                  accounts: action.payload.data, 
+                  pageNumber:action.payload.pageNumber, 
+                  pageSize: action.payload.pageSize, 
+                  totalResult: action.payload.totalResult,
+                  totalPages: action.payload.totalPages
+                  
+                };
         case "GET_ACCOUNT":
                 return {...state, loading: false, account: action.payload};
         case "SET_ACCOUNT":

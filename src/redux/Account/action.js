@@ -1,28 +1,45 @@
 import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
-export const getAccounts = () => {
+export const getAccounts = (pageNumber, pageSize) => {
     return (dispatch) => {
 
         dispatch({
             type: "ACCOUNT_LOADING"
-          });
-        axios.get('https://localhost:5001/api/Account')
+          })
+        axios.get('https://localhost:5001/api/Account', {
+            params: {
+                pageNumber: pageNumber,
+                pageSize: pageSize
+                }
+            })
         .then(response => {
-            console.log(response);
+           // console.log(response);
             dispatch({
                 type: 'GET_ACCOUNTS',
-                payload: response.data.data
+                payload: response.data
             })
         })
         .catch(error => {
+            dispatch({
+                type: "ACCOUNT_LOAD_FAIL",
+              })
+              toast.error("Something went wrong !", {
+                position: toast.POSITION.TOP_RIGHT,
+              });
             console.log(error);
         });
     }
 }
 
 
+
 export const getAccount = (id) => {
+
+  
     return (dispatch) => {
+        dispatch({
+            type: "ACCOUNT_LOADING"
+          })
         axios.get('https://localhost:5001/api/Account', {
             params: {
               id: id
@@ -36,10 +53,49 @@ export const getAccount = (id) => {
             })
         })
         .catch(error => {
+            dispatch({
+                type: "ACCOUNT_LOAD_FAIL",
+              })
+              toast.error("Something went wrong !", {
+                position: toast.POSITION.TOP_RIGHT,
+              });
             console.log(error);
         });
     }
 }
+
+
+export const searchAccounts = (query) => {
+    
+    return (dispatch) => {
+
+        dispatch({
+            type: "ACCOUNT_LOADING"
+          })
+        axios.get('https://localhost:5001/api/Account/Search', {
+            params: {
+              query: query
+            }
+        })
+        .then(response => {
+         //   console.log(response);
+            dispatch({
+                type: 'SEARCH_ACCOUNTS',
+                payload: response.data
+            })
+        })
+        .catch(error => {
+            dispatch({
+                type: "ACCOUNT_LOAD_FAIL",
+              })
+              toast.error("Something went wrong !", {
+                position: toast.POSITION.TOP_RIGHT,
+              });
+            console.log(error);
+        });
+    }
+}
+
 
 
 
@@ -77,7 +133,7 @@ export const createAccount = accountObj => {
             
             console.log(error);
             dispatch({
-                type: "POKEMON_LIST_FAIL",
+                type: "ACCOUNT_LOAD_FAIL",
               })
               toast.error("Something went wrong !", {
                 position: toast.POSITION.TOP_RIGHT,

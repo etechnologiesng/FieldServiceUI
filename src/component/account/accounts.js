@@ -1,7 +1,7 @@
 import React, { Fragment, useState, useMemo, useCallback } from "react";
 import Breadcrumb from "../common/breadcrumb/breadcrumb";
 import { useSelector, useDispatch, } from "react-redux";
-import { getAccounts, createAccount } from "../../redux/Account/action";
+import { searchAccounts, getAccounts, createAccount } from "../../redux/Account/action";
 import differenceBy from "lodash/differenceBy";
 import { mydata } from "../../data/dummyTableData";
 import { toast } from "react-toastify";
@@ -30,30 +30,9 @@ import {
 } from "reactstrap";
 
 
-const customStyles = {
-  rows: {
-    style: {
-    borderTop: '0',
-    borderRight: '1px solid #f2f4ff', // override the row height
-    }
-  },
-  headCells: {
-    style: {
-      paddingLeft: '8px', // override the cell padding for head cells
-      paddingRight: '8px',
-    },
-  },
-  cells: {
-    style: {
-      paddingLeft: '8px', // override the cell padding for data cells
-      paddingRight: '8px',
-    },
-  },
-};
-
 const Account = () => {
 
-
+  const dispatch = useDispatch();
  
   const handleEdit = () => {
     if (
@@ -75,23 +54,72 @@ const Account = () => {
   const [selectedRows, setSelectedRows] = useState([]);
   const [toggleCleared, setToggleCleared] = useState(false);
   
-  const accounts = useSelector(state => state.Account.accounts)
+  const accounts = useSelector(state => state.Account.accounts);
+  const pageNumber = useSelector(state => state.Account.pageNumber);
+  const totalResult = useSelector(state => state.Account.totalResult);
+  const pageSize = useSelector(state => state.Account.pageSize);
+  const totalPages = useSelector(state => state.Account.totalPages);
+  const loading =  useSelector(state => state.Account.loading);
+  console.log(loading)
+  const handleClick = (e, pageNumber, pagesize) => {
+   
+    console.log(pageNumber)
+    console.log(pagesize)
+     e.preventDefault()
+     dispatch(getAccounts(pageNumber, pagesize))
+    
 
-
-
-  //console.log(territories.data)
-  //const terri = territories.data;
+    }
   
-  const dispatch = useDispatch();
+  const createPagination= (n, pageSize, pageNumber) => {
+    var elements = [];
+    for(var i =1; i <= n; i++){
+      var p = i;
+        elements.push(<PaginationItem key={p} active= {i=== pageNumber}>
+         
+          <PaginationLink onClick={(e) => handleClick(e, p, pageSize)} href="#" >{p}</PaginationLink>
+        </PaginationItem>);
+    }
+    return elements;
+}
+  //console.log(accountInits)
+   //var accounts = useState(accountInits);
+   console.log(accounts)
+  //const [search, setSearch] = useState('')
+
+  const handleInputChange = (event) => {
+    const { name, value } = event.target
+       
+      //setAccount({ ...account, [name]: value })
+     // console.log(account);
+
+     dispatch(searchAccounts(value));
+     //setAccounts(accountsInit);
+    // setSearch(value);
+     console.log(accounts)
+
+    }
+  
+
   React.useEffect(() => {
-    dispatch(getAccounts());
+  //  console.log(accounts)
+   // setAccounts([0])
+ //  console.log(search)
+   //if(search ===''){
+  dispatch(getAccounts())
+    //else{
+  // dispatch(searchAccounts(search));
+
+    //}
+   // setAccounts(accountsInit)
+    
   }, [])
 
 
 
-  const handleRowSelected = useCallback((state) => {
-    setSelectedRows(state.selectedRows);
-  }, []);
+ // const handleRowSelected = useCallback((state) => {
+   // setSelectedRows(state.selectedRows);
+  //}, [accounts]);
  
 
  
@@ -113,7 +141,7 @@ const Account = () => {
               </CardHeader>
               
               <CardBody>
-                <Col sm='5' md={{ size: 5, offset: 7 }}>
+              <Col sm='5' md={{ size: 5, offset: 7 }}>
                 <FormGroup className=" mb-2">
                         
                         <InputGroup className="pill-input-group">
@@ -123,6 +151,8 @@ const Account = () => {
                             type="text"
                             aria-label="Amount (to the nearest dollar)"
                             placeholder="search by name"
+                            onChange={handleInputChange}
+                            name = "search"
                           />
                           <InputGroupAddon addonType="append">
                             <InputGroupText>
@@ -145,8 +175,19 @@ const Account = () => {
                       <th scope="col">Owner</th>
                       <th scope="col"></th>
                     </tr>
-                  </thead><tbody>
-                  {( accounts !== undefined) ? accounts.map((account, index) =>(
+                  </thead><tbody style={{textAlign:'center'}}>
+
+
+                  {
+                  
+                  
+                  (loading == true) ? (<tr><td >
+                  <div className="loader-box">
+                    <div className="loader-19"></div>
+                  </div>
+                </td></tr>):
+                  
+                  ( accounts.length >0) ? accounts.map((account, index) =>(
                   <tr key={account.id}>
                   <td >{account.name}</td>
                   <td>{account.systemStatus}</td>
@@ -164,7 +205,7 @@ const Account = () => {
             style={{
               width: 35,
               fontSize: 16,
-              padding: 11,
+              padding: 6,
               color: "rgb(40, 167, 69)",
             }}
           ></i>
@@ -176,30 +217,28 @@ const Account = () => {
                 </tr>
                   )) :  <tr>
                   <td>
-                        No location added yet</td>
+                        No records found</td>
                 </tr>
                   }
  
                  </tbody>
                 </Table>
-                <Pagination aria-label="...">
-                  <ul className="pagination pagination-primary mb-2">
-                    <PaginationItem disabled>
-                      <PaginationLink>Previous</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink href="#javascript">1</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem active>
-                      <PaginationLink href="#javascript">
-                        2 <span className="sr-only">(current)</span>
-                      </PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink href="#javascript">3</PaginationLink>
-                    </PaginationItem>
-                    <PaginationItem>
-                      <PaginationLink href="#javascript">Next</PaginationLink>
+                <Pagination className=" mb-2" aria-label="...">
+                  <ul className="pagination pagination-primary ">
+                
+                    <PaginationItem  disabled = {pageNumber ===1} >
+                      <PaginationLink onClick={e => handleClick(e, pageNumber-1, pageSize)} href="#">Previous</PaginationLink></PaginationItem>
+                     
+
+                  {[...Array(totalPages)].map((page, i) => 
+                <PaginationItem active={i+1 === pageNumber} key={i}>
+                <PaginationLink onClick={e => handleClick(e, i+1,pageSize )} href="#">
+                  {i + 1}
+                </PaginationLink>
+               </PaginationItem>
+            )}
+                      <PaginationItem disabled = {pageNumber ===(totalResult/pageSize)}>
+                      <PaginationLink onClick={e => handleClick(e, pageNumber+1, pageSize)}  href="#">Next</PaginationLink>
                     </PaginationItem>
                   </ul>
                 </Pagination>

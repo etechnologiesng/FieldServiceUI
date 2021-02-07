@@ -1,11 +1,9 @@
 import React, { Fragment, useState, useMemo, useCallback } from "react";
 import Breadcrumb from "../common/breadcrumb/breadcrumb";
 import { useSelector, useDispatch, } from "react-redux";
-import { searchAccounts, getAccounts, createAccount } from "../../redux/Account/action";
-import differenceBy from "lodash/differenceBy";
-import { mydata } from "../../data/dummyTableData";
-import { toast } from "react-toastify";
-import DataTable from "react-data-table-component";
+import { getAccount, searchAccounts, getAccounts, createAccount } from "../../redux/Account/action";
+import { useParams, useHistory } from "react-router-dom";
+
 
 import {
   Container,
@@ -33,19 +31,21 @@ import {
 const Account = () => {
 
   const dispatch = useDispatch();
- 
+  const history = useHistory();
   const handleEdit = () => {
-    if (
-      window.confirm(
-        `Are you sure you want to delete:\r ${selectedRows.map(
-          (r) => r.name
-        )}?`
-      )
-    ) {
+    //if (
+      //window.confirm(
+        //`Are you sure you want to delete:\r ${selectedRows.map(
+          //(r) => r.name
+        //)}?`
+    //  )
+   // ) {
      //setToggleCleared(!toggleCleared);
      // setData(differenceBy(data, selectedRows, "name"));
-      toast.success("Successfully Deleted !");
-    }
+     // toast.success("Successfully Deleted !");
+
+
+    //}
   };
 
 
@@ -60,7 +60,13 @@ const Account = () => {
   const pageSize = useSelector(state => state.Account.pageSize);
   const totalPages = useSelector(state => state.Account.totalPages);
   const loading =  useSelector(state => state.Account.loading);
-  console.log(loading)
+
+
+  const editAccount = (account) => {
+    dispatch(getAccount(account.id));
+    history.push(`${process.env.PUBLIC_URL}/account/${account.id}`);
+  };
+  
   const handleClick = (e, pageNumber, pagesize) => {
    
     console.log(pageNumber)
@@ -166,35 +172,39 @@ const Account = () => {
                   <thead>
                     <tr>
                       <th scope="col">Name</th>
-                      <th scope="col">SystemStatus</th>
+                      <th scope="col">Status</th>
                       
                       <th scope="col">Phone</th>
                       <th scope="col">Email</th>
-                      <th scope="col">LastDateModified</th>
+                      
                       <th scope="col">CreatedOn</th>
-                      <th scope="col">Owner</th>
+                      <th scope="col">CreatedBy</th>
                       <th scope="col"></th>
                     </tr>
-                  </thead><tbody style={{textAlign:'center'}}>
+                  </thead><tbody >
 
 
                   {
                   
                   
                   (loading == true) ? (<tr><td >
-                  <div className="loader-box">
+                  <div className="loader-box text-center">
                     <div className="loader-19"></div>
                   </div>
                 </td></tr>):
                   
                   ( accounts.length >0) ? accounts.map((account, index) =>(
-                  <tr key={account.id}>
+                  <tr style={{
+                    hover:{background:'black'},
+                    cursor:'pointer',
+                    
+                  }} onDoubleClick={()=> editAccount(account)} key={account.id}>
                   <td >{account.name}</td>
                   <td>{account.systemStatus}</td>
                   
                   <td>{account.phone1}</td>
                   <td>{account.email}</td>
-                  <td>{account.lastDateModified}</td>
+                  
                   <td>{account.createdOn}</td>
                   <td>{account.owner}</td>
                   <td>
@@ -205,7 +215,7 @@ const Account = () => {
             style={{
               width: 35,
               fontSize: 16,
-              padding: 6,
+              cursor:'pointer',
               color: "rgb(40, 167, 69)",
             }}
           ></i>
@@ -217,13 +227,13 @@ const Account = () => {
                 </tr>
                   )) :  <tr>
                   <td>
-                        No records found</td>
+                        <div className="text-center">No records found</div></td>
                 </tr>
                   }
  
                  </tbody>
                 </Table>
-                <Pagination className=" mb-2" aria-label="...">
+                {(accounts.length >0)? (<Pagination className=" mb-2" aria-label="...">
                   <ul className="pagination pagination-primary ">
                 
                     <PaginationItem  disabled = {pageNumber ===1} >
@@ -237,11 +247,11 @@ const Account = () => {
                 </PaginationLink>
                </PaginationItem>
             )}
-                      <PaginationItem disabled = {pageNumber ===(totalResult/pageSize)}>
+                      <PaginationItem disabled = {pageNumber ===(totalResult/pageSize) || totalResult <= pageSize}>
                       <PaginationLink onClick={e => handleClick(e, pageNumber+1, pageSize)}  href="#">Next</PaginationLink>
                     </PaginationItem>
                   </ul>
-                </Pagination>
+                </Pagination>):(<p></p>)}
               </div>
 
                

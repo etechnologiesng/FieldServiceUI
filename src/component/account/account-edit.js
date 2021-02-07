@@ -2,6 +2,7 @@ import React, { Fragment , useState } from "react";
 import Breadcrumb from "../common/breadcrumb/breadcrumb";
 import { useSelector, useDispatch, } from "react-redux"
 import { getAccount, createAccount } from "../../redux/Account/action";
+import { useParams, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Contact from "../contact/contacts"
 import Location from "../location/locations"
@@ -25,8 +26,9 @@ import {
   InputGroupAddon,
   InputGroupText,
 } from "reactstrap";
-const CreateAccount = (props) => {
-  const { useReducer } = React
+const EditAccount = (props) => {
+  let params = useParams();
+ 
   const accountInit ={
    'id':null,
    "firstname":'',
@@ -37,50 +39,67 @@ const CreateAccount = (props) => {
    'website':'',
    'description':'',
    'serviceTerritory':'',
+   'serviceTerritoryId':'',
    contacts:[],
-   locations:[]
+   locations:[],
+   'createdBy':''
 
   } 
-
-  //const store = configureStore({ reducer: Account })
-
+  const dispatch = useDispatch();
+  const id = params.id;
+  const accountState= useSelector(state => state.Account.account)
   const territories = useSelector(state => state.Territory.territories)
-  //console.log(store.getState())
- // const [state, dispatchs] = useReducer(RootReducer, initialState)
-
-  //const accountState = useSelector(state => state.Account.account)
-  //console.log(accountState);
+  //console.log(account);
   const { register, handleSubmit, errors } = useForm();
-  const [account, setAccount] = useState(accountInit);
-  //const [accountid, setAccountId] = useState()
-  //const territories = useSelector(state => state.Territory.territories)
+  // const [account , setAccount] = useState(accountState, ()=>dispatch(getAccount(id)))
+    const [account, setAccount] = useState(accountState)
+  console.log(account);
   
   const handleInputChange = (event) => {
   const { name, value } = event.target
-     
-    setAccount({ ...account, [name]: value })
-   // console.log(account);
+    // accountObj = account
+  //dispatch({"type": "SET_ACCOUNT", })
+  
+  
+  setAccount({ ...account, [name]: value })
+
+    console.log(account);
   }
   // 1
   //const currentUser = useSelector(state => state.currentUser)
-  const dispatch = useDispatch();
+  
 
   const onSubmit = (data) => {
     if (data !== "") {
       dispatch(createAccount(account));
-  
+    //  setAccountId({ ...account, id: value })
+   // accountState = useSelector(state => state.Account.account)
+  //  console.log(accountState);
     } else {
       console.log(errors)
       errors.showMessages();
     }
   };
   React.useEffect(() => {
-    dispatch(getTerritories());
-  }, [])
+    const id = params.id;
+if(accountState == 'undefined'){
+  dispatch(getAccount(id));
+}
+ // var data = localStorage.getItem('account')
+  console.log(account)
+  console.log(accountState)
+   // if(account === {}){
+      setAccount(accountState)
+      
+    
+  //}
+ // }
+ dispatch(getTerritories());
+ }, [accountState])
 
   return (
     <Fragment>
-      <Breadcrumb parent="Service / Account" title="Create Account" />
+      <Breadcrumb parent="Service / Account" title="Edit Account" />
       <Container fluid={true}>
         <div className="edit-profile">
           <Row>
@@ -258,7 +277,7 @@ const CreateAccount = (props) => {
                           <option value="0">--Select--</option>
                           {territories.map((territory, index) => 
                            (
-                          <option key={territory.id} value={territory.id}>{territory.name}</option>
+                          <option key={territory.id} value={territory.id} selected = {account.serviceTerritoryId === territory.id}>{territory.name}</option>
                           ))}
                         </Input>
                         </InputGroup>
@@ -266,6 +285,78 @@ const CreateAccount = (props) => {
                       </FormGroup>
                       
                     </Col>
+
+
+                    <Col lg="6">
+                    <FormGroup disabled className=" m-form__group">
+                        <Label>Created by</Label>
+                        <InputGroup>
+                          <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                         
+                          <i className="icofont icofont-web"></i>
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input
+                            disabled
+                            className="form-control"
+                            type="text"
+                            placeholder=""
+                            value={account.createdBy}
+                            onChange={handleInputChange}
+                            name = "createdBy"
+                          />
+                        </InputGroup>
+                      </FormGroup>
+                      
+                    </Col>
+                    {(account.lastDateModified !=='')?(<Col lg="6">
+                    <FormGroup className=" m-form__group">
+                        <Label>LastDateModified</Label>
+                        <InputGroup>
+                          <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                         
+                          <i className="icofont icofont-date"></i>
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input
+                            disabled
+                            className="form-control"
+                            type="text"
+                            placeholder=""
+                            value={account.lastDateModified}
+                            onChange={handleInputChange}
+                            name = "lastDateModified"
+                          />
+                        </InputGroup>
+                      </FormGroup>
+                      
+                    </Col>):(<h1></h1>)}
+                    {(account.lastDateModified !=='')?(<Col lg="6">
+                    <FormGroup  className=" m-form__group">
+                        <Label>Modified by</Label>
+                        <InputGroup>
+                          <InputGroupAddon addonType="prepend">
+                          <InputGroupText>
+                         
+                          <i className="icofont icofont-web"></i>
+                            </InputGroupText>
+                          </InputGroupAddon>
+                          <Input
+                            disabled
+                            className="form-control"
+                            type="text"
+                            placeholder=""
+                            value={account.modifiedBy}
+                            onChange={handleInputChange}
+                            name = "modifiedBy"
+                          />
+                        </InputGroup>
+                      </FormGroup>
+                      
+                    </Col>):(<h1></h1>)}
+                    
                     
                     <div className="col-md-12">
                       <div className="form-group mb-0">
@@ -329,4 +420,4 @@ const CreateAccount = (props) => {
 
 
 
-export default CreateAccount;
+export default EditAccount;

@@ -148,6 +148,7 @@ import Usercards from "../component/appnew/users/usercards";
 
 //Services
 import CreateAccount from "../component/account/Account-Create";
+import EditAccount from "../component/account/account-edit";
 
 import Account from "../component/account/accounts";
 // Social app
@@ -324,6 +325,7 @@ export const routes = [
 //Services
   { path: "/Accounts", Component: Account },
   { path: "/appnew/social-app", Component: SocialApp },
+  { path: "/account/:id", Component: EditAccount },
 
   { path: "/editors/ck-editor", Component: CkEditor },
   { path: "/editors/mde-editor", Component: MdeEditor },

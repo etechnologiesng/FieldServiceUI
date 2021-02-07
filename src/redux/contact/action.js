@@ -1,6 +1,6 @@
 import axios from 'axios';
 import { ToastContainer, toast } from "react-toastify";
-export const getContacts = () => {
+export const getAccountContacts = (accountContacts) => {
     return (dispatch) => {
         axios.get('http://localhost:3001/users')
         .then(response => {

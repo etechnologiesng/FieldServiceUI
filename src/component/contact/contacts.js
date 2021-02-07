@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { getContact, createContact } from "../../redux/contact/action";
+import { updateContact, editContact, deleteContact, createContact } from "../../redux/Account/action";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch, } from "react-redux"
 import {
@@ -26,9 +26,9 @@ import {
   ModalFooter,
 } from "reactstrap";
 const Contact = (props) => {
-  const contacts = useSelector(state => state.Contact.contacts)
-  console.log(contacts)
-  const account = useSelector(state => state.Account.account)
+  const contacts = useSelector(state => state.Account.account.contacts)
+  //console.log(contacts)
+ //// const account = useSelector(state => state.Account.account)
  // const [contact, setContact] = useState(contactInit);
  // const history = useHistory();
  const contactInit ={
@@ -39,33 +39,46 @@ const Contact = (props) => {
   'email':''
 }
 const accountState = useSelector(state => state.Account.account)
-console.log(accountState)
+//console.log(accountState)
 const [contact, setContact] = useState(contactInit);
-//const [accountId, setaccountId] = useState(account.id);
-  // eslint-disable-next-line
-//  const [searchValue, setsearchValue] = useState("");
- // const [users, setUsers] = useState([]);
-  //const db = firebase.firestore();
+const [editContact, setEditContact] = useState(false);
 
- // useEffect(() => {
-   // const unsubscribe = db.collection("contactApp").onSnapshot((snapshot) => {
-    //  const getUser = snapshot.docs.map((doc) => ({
-    //    id: doc.id,
-     //   ...doc.data(),pm 
-   //   }));
-     // setUsers(getUser);
-   // });
-   // return () => unsubscribe();
-    // eslint-disable-next-line
- // }, []);
+  useEffect(() => {
+  
+  }, []);
  const dispatch = useDispatch();
+ const handleDelete = (id) => {
+  if (
+    window.confirm(
+      `Are you sure you want to delete?`
+    )
+  ) {
+    dispatch(deleteContact(accountState.id, id));
+   // toast.success("Successfully Deleted !");
+  }
+};
+
+const handleEdit = (contact) => {
+  
+ // setContact(contact)
+  dispatch(updateContact(accountState.id,contact));
+   // toast.success("Successfully Deleted !");
+  
+};
+
+
+
  const { register, handleSubmit, errors } = useForm();
  const onSubmit = (data) => {
   if (data !== "") {
-   // console.log(props.accountId);
+   
+   if(editContact === true){
+     dispatch(updateContact(accountState.id, contact))
+   }else{
+     setEditContact(false)
    dispatch(createContact(accountState.id, contact));
-  //  setAccountId({ ...account, id: value })
-  createaccountcontacttoggle();
+   }
+  //createaccountcontacttoggle();
   } else {
     console.log(errors)
     errors.showMessages();
@@ -75,28 +88,34 @@ const [contact, setContact] = useState(contactInit);
  //const [createaccountcontact, setcreateaccountcontact] = useState(false);
  //const createaccountcontacttoggleClose = () => setcreateaccountcontact(!createaccountcontact);
  const createaccountcontacttoggle = () =>{
-
+  setEditContact(false)
+  setContact(contactInit);
+    setcreateaccountcontact(!createaccountcontact)
   
-    setcreateaccountcontact(!createaccountcontact)};
+  
+  };
+
+
+
+  const editaccountcontacttoggle = (contactObj) =>{
  
-   // const deleteUser = (userId) => {
-   // deletedUser(userId);
- // };
-//const [account, setContact] = useState({});
+    setEditContact(true)
+
+    console.log(contactObj);
+    setContact(contactObj)
+  
+    setcreateaccountcontact(!createaccountcontact)
+  
+  
+  };
+
  const handleInputChange = (event) => {
   const { name, value } = event.target
      
     setContact({ ...contact, [name]: value })
     console.log(contact);
   }
-  
- // const redirectUrl = () => {
-  //  history.push(`${process.env.PUBLIC_URL}/appnew/new-contact`);
- // };
-
- // const editContact = (user) => {
-   // history.push(`${process.env.PUBLIC_URL}/appnew/edit-contact/${user.id}`);
- //};
+ 
   return (
     <Fragment>
 
@@ -117,51 +136,74 @@ const [contact, setContact] = useState(contactInit);
                 <div className="table-responsive">
                   <table className="table card-table table-vcenter text-nowrap">
                     <thead>
-                      <tr>
-                        <th>Firstname</th>
-                        <th>Lastname</th>
+                      <tr><th>Action</th>
+                        <th>Name</th>
+                       
                         <th>Email</th>
                         <th>Phone</th>
-                        <th></th>
+                        
                       </tr>
                     </thead>
                     
-                    {(contacts.length > 0) ? (
+                    
                       <tbody>
-                        {contacts.map((contact, index) => {
-                          return (
+                        { (contacts.length > 0) ? contacts.map((contact, index) => 
+                          (
                       <tr key={index}>
+                          <td>
+
+<span style={{
+                    
+                    cursor:'pointer',
+                    
+                  }} onClick= {()=>handleDelete(contact.id)} >
+<i
+className="fa fa-trash"
+style={{ width: 35, fontSize: 16,  color: "#e4566e" }}
+></i>
+</span>
+<span style={{
+                    
+                    cursor:'pointer',
+                    
+                  }} onClick= {()=>editaccountcontacttoggle(contact)} >
+<i
+className="fa fa-pencil"
+style={{
+width: 35,
+fontSize: 16,
+
+color: "rgb(40, 167, 69)",
+}}
+></i>
+
+</span>
+
+
+</td>
                         <td>
                           
-                          {contact.firstname}
+                          {contact.firstname} {contact.lastname}
                           
                         </td>
-                        <td>{contact.lastname}</td>
+                        
                         <td>
                          
                           {contact.email}
                         </td>
                         <td>{contact.phone}</td>
-                        <td className="text-right">
-                          <Button color="primary btn-pill" size="sm">
-                            <i className="fa fa-pencil"></i> Edit
-                          </Button>
-                         
-                          <Button color="danger btn-pill" size="sm">
-                            <i className="fa fa-trash"></i> Delete
-                          </Button>
-                        </td>
+                      
                       </tr>
-                      );
-                    })} </tbody>
-                          ) : (
-                            <tbody>
-                              <tr>
-                                <td>
-                                      No contact added yet</td>
-                              </tr>
-                          </tbody>)
-                        }
+                          )
+                    ):  (
+                      
+                        <tr>
+                          <td>
+                                No contact added yet</td>
+                        </tr>
+                    )} 
+                    </tbody>
+                         
                   </table>
                 </div>
                 </CardBody>
@@ -196,7 +238,7 @@ const [contact, setContact] = useState(contactInit);
                             className="form-control"
                             type="text"
                             placeholder="Enter contact firstname"
-                            
+                            value = {contact.firstname}
                             onChange={handleInputChange}
                             name = "firstname"
                             innerRef={register({ required: true })}
@@ -223,6 +265,7 @@ const [contact, setContact] = useState(contactInit);
                             innerRef={register({ required: true })}
                             onChange={handleInputChange}
                             name = "lastname"
+                            value ={contact.lastname}
                           />
                           <span style={{color:'red'}}>{errors.lastname && "Last name is required"}</span>
                         </InputGroup>
@@ -246,6 +289,7 @@ const [contact, setContact] = useState(contactInit);
                             innerRef={register({ required: true })}
                             onChange={handleInputChange}
                             name = "phone"
+                            value = {contact.phone}
                           />
                           <span style={{color:'red'}}>{errors.phone && "Phone is required"}</span>
                         </InputGroup>
@@ -271,6 +315,7 @@ const [contact, setContact] = useState(contactInit);
                             innerRef={register({ required: true })}
                             onChange={handleInputChange}
                             name = "email"
+                            value = {contact.email}
                           />
                           <span style={{color:'red'}}>{errors.email && "Email is required"}</span>
                         </InputGroup>

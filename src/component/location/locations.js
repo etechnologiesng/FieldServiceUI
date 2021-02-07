@@ -1,5 +1,5 @@
 import React, { Fragment, useEffect, useState } from "react";
-import { deleteLocation, getLocation, createLocation } from "../../redux/location/action";
+import { updateLocation, editContact, deleteLocation, createLocation } from "../../redux/Account/action";
 import { useForm } from "react-hook-form";
 import { useSelector, useDispatch, } from "react-redux"
 import {
@@ -26,15 +26,13 @@ import {
   ModalFooter,
 } from "reactstrap";
 const Location = (props) => {
-  const locations = useSelector(state => state.Location.locations)
- // console.log(contacts)
+  const locations = useSelector(state => state.Account.account.locations)
  
- // const [contact, setContact] = useState(contactInit);
- // const history = useHistory();
  const locationInit ={
  
   "name": "",
   "description": "",
+  
   "street1": "",
   "street2": "",
   "city": "",
@@ -42,30 +40,20 @@ const Location = (props) => {
   "countryId": "",
   "longitude": 0,
   "latitude": 0,
+  "country":"",
+
   "accountId": ""
 }
 const accountState = useSelector(state => state.Account.account)
-//console.log(accountState)
+
 const [location, setLocation] = useState(locationInit);
+const [editLocation, setEditLocation] = useState(false);
 
+  useEffect(() => {
+    setLocation(locationInit)
+  }, []);
  const dispatch = useDispatch();
- const { register, handleSubmit, errors } = useForm();
- const onSubmit = (data) => {
-  if (data !== "") {
-   // console.log(props.accountId);
-   dispatch(createLocation(accountState.id, location));
-  //  setAccountId({ ...account, id: value })
-  createaccountlocationtoggle();
-  } else {
-    //console.log(errors)
-    errors.showMessages();
-  }
-};
-
-
-
-
-const handleDelete = (id) => {
+ const handleDelete = (id) => {
   if (
     window.confirm(
       `Are you sure you want to delete?`
@@ -76,14 +64,51 @@ const handleDelete = (id) => {
   }
 };
 
+const handleEdit = (location) => {
+  
+ // setContact(contact)
+  dispatch(updateLocation(accountState.id,location));
+   // toast.success("Successfully Deleted !");
+  
+};
 
+
+
+ const { register, handleSubmit, errors } = useForm();
+ const onSubmit = (data) => {
+  if (data !== "") {
+   
+   if(editLocation === true){
+     dispatch(updateLocation(accountState.id, location))
+   }else{
+     setEditLocation(false)
+   dispatch(createLocation(accountState.id, location));
+   }
+
+  } else {
+    console.log(errors)
+    errors.showMessages();
+  }
+};
  const [createaccountlocation, setcreateaccountlocation] = useState(false);
 
  const createaccountlocationtoggle = () =>{
-
+  setEditLocation(false)
+  setLocation(locationInit);
+  setcreateaccountlocation(!createaccountlocation) 
   
-    setcreateaccountlocation(!createaccountlocation)};
+  };
+  const editaccountlocationtoggle = (locationObj) =>{
  
+    setEditLocation(true)
+
+    //console.log(locationObj);
+    setLocation(locationObj)
+  
+    setcreateaccountlocation(!createaccountlocation)
+  
+  
+  };
  
  const handleInputChange = (event) => {
   const { name, value } = event.target
@@ -120,26 +145,25 @@ const handleDelete = (id) => {
                         
                       </tr>
                     </thead> 
-                    {(locations.length > 0) ? (
-                      <tbody>
-                        {locations.map((location, index) => {
-                          return (
+                    <tbody>
+                        { (locations.length > 0) ? locations.map((location, index) => 
+                          (
                       <tr key={index}>
                         <td>
 
                         <span onClick= {()=>handleDelete(location.id)} >
           <i
             className="fa fa-trash"
-            style={{ width: 35, fontSize: 16, padding: 11, color: "#e4566e" }}
+            style={{ width: 35, fontSize: 16,  color: "#e4566e" }}
           ></i>
         </span>
-        <span >
+        <span onClick= {()=>editaccountlocationtoggle(location)}  >
           <i
             className="fa fa-pencil"
             style={{
               width: 35,
               fontSize: 16,
-              padding: 11,
+              
               color: "rgb(40, 167, 69)",
             }}
           ></i>
@@ -161,16 +185,15 @@ const handleDelete = (id) => {
                        
                         
                       </tr>
-                      );
-                    })} </tbody>
-                          ) : (
-                            <tbody>
+                          )
+                          ):  (
+                            
                               <tr>
                                 <td>
                                       No location added yet</td>
                               </tr>
-                          </tbody>)
-                        }
+                          )} 
+                          </tbody>
                   </table>
                 </div>
                 </CardBody>
@@ -325,13 +348,13 @@ const handleDelete = (id) => {
                             className="form-control"
                             type="text"
                             placeholder="Enter Postcode"
-                            value={location.postcode}
+                            value={location.postCode}
                             onChange={handleInputChange}
                             name = "postCode"
                             innerRef={register({ required: true })}
                             
                           />
-                           <span style={{color:'red'}}>{errors.postcode && "PostCode is required"}</span>
+                           <span style={{color:'red'}}>{errors.postCode && "PostCode is required"}</span>
                         </InputGroup>
                       </FormGroup>
                      

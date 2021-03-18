@@ -11,6 +11,7 @@ import Account from "./Account/reducer";
 import Contact from "./contact/reducer";
 import Location from "./location/reducer"
 import Territory from "./common/territory/reducer"
+import WorkOrder from "./workorder/reducer";
 const reducers = combineReducers({
   data: Ecommerce,
   Wishlistdata: Wishlist,
@@ -23,7 +24,8 @@ const reducers = combineReducers({
   Account,
   Contact,
   Location,
-  Territory
+  Territory,
+  WorkOrder
 
 });
 

@@ -36,7 +36,8 @@ const CreateAccount = (props) => {
    'email':'',
    'website':'',
    'description':'',
-   'serviceTerritory':'',
+   'serviceTerritoryId':'',
+   
    contacts:[],
    locations:[]
 
@@ -59,7 +60,7 @@ const CreateAccount = (props) => {
   const { name, value } = event.target
      
     setAccount({ ...account, [name]: value })
-   // console.log(account);
+    console.log(account);
   }
   // 1
   //const currentUser = useSelector(state => state.currentUser)
@@ -250,7 +251,7 @@ const CreateAccount = (props) => {
                           </InputGroupAddon>
                           <Input
                           type="select"
-                          name="select"
+                          onChange={handleInputChange}
                           className="form-control"
                           name="serviceTerritoryId"
                           innerRef={register({ required: true })}
@@ -262,7 +263,7 @@ const CreateAccount = (props) => {
                           ))}
                         </Input>
                         </InputGroup>
-                        <span style={{color:'red'}}>{errors.name && "Name is required"}</span>
+                        <span style={{color:'red'}}>{errors.name && "Service territory is required"}</span>
                       </FormGroup>
                       
                     </Col>

@@ -6,8 +6,9 @@ import { useParams, useHistory } from "react-router-dom";
 import { useForm } from "react-hook-form";
 import Contact from "../contact/contacts"
 import Location from "../location/locations"
-import Territory from "../common/dropdown/territory"
+
 import {  getTerritories } from "../../redux/common/territory/action";
+
 import {
   Container,
   Row,
@@ -22,6 +23,7 @@ import {
   Label,
   Input,
   Button,
+  
   InputGroup,
   InputGroupAddon,
   InputGroupText,
@@ -40,6 +42,7 @@ const EditAccount = (props) => {
    'description':'',
    'serviceTerritory':'',
    'serviceTerritoryId':'',
+   'lastDateModified':'',
    contacts:[],
    locations:[],
    'createdBy':''
@@ -268,16 +271,19 @@ if(accountState == 'undefined'){
                             </InputGroupText>
                           </InputGroupAddon>
                           <Input
-                          type="select"
-                          name="select"
+                         
+                          type='select'
                           className="form-control"
                           name="serviceTerritoryId"
                           innerRef={register({ required: true })}
+                          onChange={handleInputChange}
+                          defaultValue={account.serviceTerritoryId}
+                          value = {account.serviceTerritoryId}
                         >
                           <option value="0">--Select--</option>
                           {territories.map((territory, index) => 
                            (
-                          <option key={territory.id} value={territory.id} selected = {account.serviceTerritoryId === territory.id}>{territory.name}</option>
+                          <option key={territory.id} value={territory.id} selected={account.serviceTerritoryId==territory.id} >{territory.name}</option>
                           ))}
                         </Input>
                         </InputGroup>
@@ -302,15 +308,15 @@ if(accountState == 'undefined'){
                             className="form-control"
                             type="text"
                             placeholder=""
-                            value={account.createdBy}
-                            onChange={handleInputChange}
+                            value={(account.createdBy === null)?'':account.createdBy}
+                            
                             name = "createdBy"
                           />
                         </InputGroup>
                       </FormGroup>
                       
                     </Col>
-                    {(account.lastDateModified !=='')?(<Col lg="6">
+                    {(account.lastDateModified !==null)?(<Col lg="6">
                     <FormGroup className=" m-form__group">
                         <Label>LastDateModified</Label>
                         <InputGroup>
@@ -333,7 +339,7 @@ if(accountState == 'undefined'){
                       </FormGroup>
                       
                     </Col>):(<h1></h1>)}
-                    {(account.lastDateModified !=='')?(<Col lg="6">
+                    {(account.lastDateModified !==null)?(<Col lg="6">
                     <FormGroup  className=" m-form__group">
                         <Label>Modified by</Label>
                         <InputGroup>

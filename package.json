@@ -93,6 +93,8 @@
     "world-map-geojson": "^1.0.2"
   },
   "scripts": {
+    "predeploy": "npm run build",
+   "deploy": "gh-pages -d build",
     "start": "react-scripts --max_old_space_size=8096 start",
     "build": "react-scripts --max_old_space_size=8096 build",
     "test": "react-scripts test",
